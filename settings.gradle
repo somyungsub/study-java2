@@ -1,0 +1,6 @@
+rootProject.name="study-java2"
+
+include ":practice"
+file("${rootDir}/practice/kafka").eachDir {
+    include "practice:kafka:${it.name}"
+}

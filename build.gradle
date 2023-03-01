@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+
+allprojects {
+    group "study.java2"
+
+    repositories {
+        mavenCentral()
+    }
+}
