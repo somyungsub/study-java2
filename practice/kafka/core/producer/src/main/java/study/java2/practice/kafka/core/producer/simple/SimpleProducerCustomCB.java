@@ -1,4 +1,4 @@
-package study.java2.practice.kafka.core.simple;
+package study.java2.practice.kafka.core.producer.simple;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;

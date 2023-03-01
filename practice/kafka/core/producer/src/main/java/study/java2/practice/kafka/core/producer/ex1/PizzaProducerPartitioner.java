@@ -1,7 +1,10 @@
-package study.java2.practice.kafka.core.ex1;
+package study.java2.practice.kafka.core.producer.ex1;
 
 import com.github.javafaker.Faker;
-import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +14,12 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-public class PizzaProducer {
-  public static final Logger logger = LoggerFactory.getLogger(PizzaProducer.class.getName());
+public class PizzaProducerPartitioner {
+  public static final Logger logger = LoggerFactory.getLogger(PizzaProducerPartitioner.class.getName());
 
   public static void main(String[] args) {
 
-    String topicName = "pizza-topic";
+    String topicName = "pizza-topic-partitioner";
 
     //KafkaProducer configuration setting
     // null, "hello world"
@@ -25,12 +28,33 @@ public class PizzaProducer {
     props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
     props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
     props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-    //props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "50000");
-    //props.setProperty(ProducerConfig.ACKS_CONFIG, "0");
+//    props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "50000");  // 전송 타임아웃
+//    props.setProperty(ProducerConfig.ACKS_CONFIG, "0"); // all : 디폴트(레플리카까지 전부 복제된 후 응답, 가장 안정적,중복허용), 1 : 중복허용전송 , 0 : 최대한번 전송
+    props.setProperty(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
+    props.setProperty("custom.specialKey", "P001");
+
+    /*
+      정확히한번 전송 (트랜잭션 기반 전송), 중복 없이 -> 주로 카프카 스트림에서 사용
+      트랜잰션기반전송 : consumer -> process -> producer 의 .. 주로 카프카스트림
+      1. 최대 한번 전송 : ack=0, ack 응답이 없어도 메시지 보냄
+      2. 적어도 한번 전송 : ack=1, ack 를 받은 다음에 다음메시지 전송. 메시지 소실은 없지만 중복 전송을 할 수 있음 (네트워크 장애등)
+      3. 중복 없이 전송 : ack=all(-1), ack를 받은 다음에 다음메시지 전송. 브로커에서 메시지가 중복될 경우, 메시지로그에 기록하지 않고 ack만 보냄
+        - enable.idempotence=true, retries > 0, max.in.flight.requests.per.connection은 1~5값
+        - 성능은 감소하나, 안정성 확보
+        - config 잘못 설정하면 오류 or 기동안되거나 정상적으로 기능처리 못함, 기본설정그대로 쓰면 되긴함
+        - ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG
+        - ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION
+        - ProducerConfig.RETRIES_CONFIG
+     */
+
+    //batch setting
+//    props.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, "32000"); // 배치 사이즈
+//    props.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");     // 수집시간
+//    props.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "20");     // 메시지 배치의 개수
 
     //KafkaProducer object creation
     KafkaProducer<String, String> kafkaProducer = new KafkaProducer<String, String>(props);
-    sendPizzaMessage(kafkaProducer, topicName, -1, 1000, 0, 0, false);
+    sendPizzaMessage(kafkaProducer, topicName, -1, 500, 0, 0, false);
     kafkaProducer.close();
 
   }

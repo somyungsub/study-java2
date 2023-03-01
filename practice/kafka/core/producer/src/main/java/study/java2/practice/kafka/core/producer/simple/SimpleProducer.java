@@ -1,18 +1,19 @@
-package study.java2.practice.kafka.core.simple;
+package study.java2.practice.kafka.core.producer.simple;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-public class SimpleProducerFor {
-  private static final Logger log = LoggerFactory.getLogger(SimpleProducerFor.class.getName());
+public class SimpleProducer {
+  private static final Logger log = LoggerFactory.getLogger(SimpleProducer.class.getName());
   private static final String HOST_NAME = "localhost:9093";
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     // 1. KafkaProducer configuration setting
@@ -31,18 +32,16 @@ public class SimpleProducerFor {
     String topicName = "simple-topic";
 
     // record 설정, data : key-value
+    ProducerRecord record = new ProducerRecord(topicName,  "001","hello~kafka");
 
     // kafka producer -> message -> kafka-server
-    for (int i = 0; i < 20; i++) {
-      ProducerRecord record = new ProducerRecord(topicName,  String.valueOf(i),"hello~kafka " + (i+1000));
-      kafkaProducer.send(record, (metadata, exception) -> {
-        if (!Objects.isNull(exception)) {
-          log.error(exception.getMessage());
-        } else {
-          log.info("{}, {}, {}, {}", metadata.topic(), metadata.offset(), metadata.partition(), metadata.timestamp());
-        }
-      });
-    }
+    Future<RecordMetadata> send = kafkaProducer.send(record);
+
+    RecordMetadata recordMetadata = send.get();
+    log.info("#### record metadata receive ####");
+    log.info("partition : {}", recordMetadata.partition());
+    log.info("offset : {}", recordMetadata.offset());
+    log.info("timestamp : {}", recordMetadata.timestamp());
 
     // 버퍼 플러쉬 / 닫기
     kafkaProducer.flush();

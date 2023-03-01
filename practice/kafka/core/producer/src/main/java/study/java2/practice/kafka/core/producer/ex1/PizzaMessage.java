@@ -1,4 +1,4 @@
-package study.java2.practice.kafka.core.ex1;
+package study.java2.practice.kafka.core.producer.ex1;
 
 import com.github.javafaker.Faker;
 

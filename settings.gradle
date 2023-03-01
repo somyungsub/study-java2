@@ -4,3 +4,8 @@ include ":practice"
 file("${rootDir}/practice/kafka").eachDir {
     include "practice:kafka:${it.name}"
 }
+
+file("${rootDir}/practice/kafka/core").eachDir {
+    include "practice:kafka:core:${it.name}"
+}
+

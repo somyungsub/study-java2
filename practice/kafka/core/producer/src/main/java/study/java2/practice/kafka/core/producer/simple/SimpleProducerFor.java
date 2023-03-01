@@ -1,4 +1,4 @@
-package study.java2.practice.kafka.core.simple;
+package study.java2.practice.kafka.core.producer.simple;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -11,8 +11,8 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-public class SimpleProducerAsync {
-  private static final Logger log = LoggerFactory.getLogger(SimpleProducerAsync.class.getName());
+public class SimpleProducerFor {
+  private static final Logger log = LoggerFactory.getLogger(SimpleProducerFor.class.getName());
   private static final String HOST_NAME = "localhost:9093";
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     // 1. KafkaProducer configuration setting
@@ -31,16 +31,18 @@ public class SimpleProducerAsync {
     String topicName = "simple-topic";
 
     // record 설정, data : key-value
-    ProducerRecord record = new ProducerRecord(topicName,  "001","hello~kafka");
 
     // kafka producer -> message -> kafka-server
-    kafkaProducer.send(record, (metadata, exception) -> {
-      if (!Objects.isNull(exception)) {
-        log.error(exception.getMessage());
-      } else {
-        log.info("{}, {}, {}, {}", metadata.topic(), metadata.offset(), metadata.partition(), metadata.timestamp());
-      }
-    });
+    for (int i = 0; i < 20; i++) {
+      ProducerRecord record = new ProducerRecord(topicName,  String.valueOf(i),"hello~kafka " + (i+1000));
+      kafkaProducer.send(record, (metadata, exception) -> {
+        if (!Objects.isNull(exception)) {
+          log.error(exception.getMessage());
+        } else {
+          log.info("{}, {}, {}, {}", metadata.topic(), metadata.offset(), metadata.partition(), metadata.timestamp());
+        }
+      });
+    }
 
     // 버퍼 플러쉬 / 닫기
     kafkaProducer.flush();
