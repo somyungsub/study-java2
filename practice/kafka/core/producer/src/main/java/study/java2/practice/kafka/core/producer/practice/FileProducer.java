@@ -16,7 +16,7 @@ import java.util.Properties;
 
 public class FileProducer {
   private static final Logger log = LoggerFactory.getLogger(FileProducer.class);
-  private static final String TOPIC_NAME = "file-topic";
+  private static final String TOPIC_NAME = "file-sample"; // file-topic
   private static final String HOST_NAME = "localhost:9093";
 
   private static final String FILE_PATH = "practice/kafka/core/producer/src/main/resources/pizza-sample";

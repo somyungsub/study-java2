@@ -5,7 +5,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import study.java2.practice.kafka.core.producer.practice.EventHandlerMain;
 
 import java.util.concurrent.ExecutionException;
 
