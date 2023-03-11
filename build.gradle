@@ -1,11 +1,17 @@
-plugins {
-    id 'java'
-}
+//plugins {
+//    id 'java'
+//}
 
 allprojects {
     group "study.java2"
+    apply plugin: 'java'
 
     repositories {
         mavenCentral()
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.26'
+        annotationProcessor 'org.projectlombok:lombok:1.18.26'
     }
 }
