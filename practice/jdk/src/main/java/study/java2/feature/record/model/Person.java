@@ -6,4 +6,8 @@ public record Person(String name, int age) {
       throw new RuntimeException("age cannot be negative");
     }
   }
+
+  public static Person of(String name, int age){
+    return new Person(name, age);
+  }
 }
