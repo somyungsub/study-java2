@@ -1,6 +1,7 @@
 package study.java2.feature.record.model;
 
 import org.junit.jupiter.api.Test;
+import study.java14.record.model.Person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

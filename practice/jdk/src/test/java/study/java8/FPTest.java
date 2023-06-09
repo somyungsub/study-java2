@@ -2,7 +2,7 @@ package study.java8;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import study.java2.feature.record.model.Person;
+import study.java14.record.model.Person;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -12,3 +12,7 @@ file("${rootDir}/practice/kafka/core").eachDir {
     include "practice:kafka:core:${it.name}"
 }
 
+file("${rootDir}/refer").eachDir {
+    include "refer:${it.name}"
+}
+
